@@ -88,10 +88,9 @@ describe('Core', () => {
 
     it('throws when disabling autoListen and providing special host', () => {
 
-        const port = Path.join(__dirname, 'hapi-server.socket');
         expect(() => {
 
-            Hapi.server({ port, autoListen: false });
+            Hapi.server({ port: '/a/b/hapi-server.socket', autoListen: false });
         }).to.throw('Cannot specify port when autoListen is false');
     });
 
@@ -140,6 +139,11 @@ describe('Core', () => {
     it('creates a server listening on a unix domain socket', { skip: process.platform === 'win32' }, async () => {
 
         const port = Path.join(__dirname, 'hapi-server.socket');
+
+        if (Fs.existsSync(port)) {
+            Fs.unlinkSync(port);
+        }
+
         const server = Hapi.server({ port });
 
         expect(server.type).to.equal('socket');
@@ -581,6 +585,7 @@ describe('Core', () => {
             promise.req.abort();
             await expect(promise).to.reject();
 
+            await Hoek.wait(50);
             const count2 = await internals.countConnections(server);
             expect(count2).to.equal(0);
             expect(server._core.sockets.size).to.equal(0);
@@ -611,7 +616,7 @@ describe('Core', () => {
             await server.start();
             const promise = Wreck.request('GET', `https://localhost:${server.info.port}/`, { rejectUnauthorized: false });
 
-            await Hoek.wait(50);
+            await Hoek.wait(100);
             const count1 = await internals.countConnections(server);
             expect(count1).to.equal(1);
             expect(server._core.sockets.size).to.equal(1);
@@ -620,6 +625,7 @@ describe('Core', () => {
             promise.req.abort();
             await expect(promise).to.reject();
 
+            await Hoek.wait(50);
             const count2 = await internals.countConnections(server);
             expect(count2).to.equal(0);
             expect(server._core.sockets.size).to.equal(0);
@@ -692,6 +698,7 @@ describe('Core', () => {
             const socket1 = await internals.socket(server);
             const socket2 = await internals.socket(server);
 
+            await Hoek.wait(50);
             const count1 = await internals.countConnections(server);
             expect(count1).to.equal(2);
             expect(server._core.sockets.size).to.equal(2);
@@ -745,12 +752,13 @@ describe('Core', () => {
             await internals.socket(server);
             await internals.socket(server);
 
+            await Hoek.wait(50);
             const count1 = await internals.countConnections(server);
             expect(count1).to.equal(2);
 
             const timer = new Hoek.Bench();
             await server.stop({ timeout: 20 });
-            expect(timer.elapsed()).to.be.at.most(20);
+            expect(timer.elapsed()).to.be.at.most(21);
         });
 
         it('waits to destroy handled connections until after the timeout', async () => {
@@ -832,7 +840,7 @@ describe('Core', () => {
             const count2 = await internals.countConnections(server);
             expect(count2).to.equal(1);
 
-            await Hoek.wait(40);
+            await Hoek.wait(100);
 
             const count3 = await internals.countConnections(server);
             expect(count3).to.equal(0);
@@ -945,10 +953,10 @@ describe('Core', () => {
 
             const server = Hapi.server({ load: { sampleInterval: 5, maxRssBytes: 1 } });
 
+            let buffer;
             const handler = (request) => {
 
-                const start = Date.now();
-                while (Date.now() - start < 10) { }
+                buffer = buffer || Buffer.alloc(2048);
                 return 'ok';
             };
 
@@ -960,7 +968,7 @@ describe('Core', () => {
             const res1 = await server.inject('/');
             expect(res1.statusCode).to.equal(200);
 
-            await Hoek.wait(0);
+            await Hoek.wait(10);
             const res2 = await server.inject('/');
             expect(res2.statusCode).to.equal(503);
 

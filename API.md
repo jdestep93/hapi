@@ -1,4 +1,4 @@
-# v17.5.x API Reference
+# v17.6.x API Reference
 
 <!-- toc -->
 
@@ -238,6 +238,7 @@
     - [`request.server`](#request.server)
     - [`request.state`](#request.state)
     - [`request.url`](#request.url)
+  - [`request.active()`](#request.active())
   - [`request.generateResponse(source, [options])`](#request.generateResponse())
   - [`request.log(tags, [data])`](#request.log())
   - [`request.route.auth.access(request)`](#request.route.auth.access())
@@ -389,7 +390,7 @@ The public hostname or IP address. Used to set [`server.info.host`](#server.info
 
 Default value: none.
 
-An optional node HTTP (or HTTPS) [`http.Server`](http://nodejs.org/api/http.html#http_class_http_server)
+An optional node HTTP (or HTTPS) [`http.Server`](https://nodejs.org/api/http.html#http_class_http_server)
 object (or an object with a compatible interface).
 
 If the `listener` needs to be manually started, set [`autoListen`](#server.options.autolisten) to
@@ -537,7 +538,7 @@ Sets the default configuration for every state (cookie) set explicitly via
 Default value: none.
 
 Used to create an HTTPS connection. The `tls` object is passed unchanged to the node
-HTTPS server as described in the [node HTTPS documentation](http://nodejs.org/api/https.html#https_https_createserver_options_requestlistener).
+HTTPS server as described in the [node HTTPS documentation](https://nodejs.org/api/https.html#https_https_createserver_options_requestlistener).
 
 Set to `true` when passing a [`listener`](#server.options.listener) object that has been configured
 to use TLS directly.
@@ -1443,7 +1444,7 @@ Registers a custom content decoding compressor to extend the built-in support fo
 - `decoder` - a function using the signature `function(options)` where `options` are the encoding
   specific options configured in the route [`payload.compression`](#route.options.payload.compression)
   configuration option, and the return value is an object compatible with the output of node's
-  [`zlib.createGunzip()`](https://nodejs.org/dist/latest-v6.x/docs/api/zlib.html#zlib_zlib_creategunzip_options).
+  [`zlib.createGunzip()`](https://nodejs.org/api/zlib.html#zlib_zlib_creategunzip_options).
 
 Return value: none.
 
@@ -1589,7 +1590,7 @@ If a circular  dependency is detected, an exception is thrown (e.g. two plugins 
 function to be called after the other).
 
 The method does not provide version dependency which should be implemented using
-[npm peer dependencies](http://blog.nodejs.org/2013/02/07/peer-dependencies/).
+[npm peer dependencies](https://nodejs.org/en/blog/npm/peer-dependencies/).
 
 ```js
 const after = function (server) {
@@ -1628,7 +1629,7 @@ Registers a custom content encoding compressor to extend the built-in support fo
 - `encoder` - a function using the signature `function(options)` where `options` are the encoding
   specific options configured in the route [`compression`](#route.options.compression) option, and
   the return value is an object compatible with the output of node's
-  [`zlib.createGzip()`](https://nodejs.org/dist/latest-v6.x/docs/api/zlib.html#zlib_zlib_creategzip_options).
+  [`zlib.createGzip()`](https://nodejs.org/api/zlib.html#zlib_zlib_creategzip_options).
 
 Return value: none.
 
@@ -2425,16 +2426,16 @@ server.route([
 #### Path parameters
 
 Parameterized paths are processed by matching the named parameters to the content of the incoming
-request path at that path segment. For example, '/book/{id}/cover' will match '/book/123/cover' and
-`request.params.id` will be set to `'123'`. Each path segment (everything between the opening '/'
-and the closing '/' unless it is the end of the path) can only include one named parameter. A
-parameter can cover the entire segment ('/{param}') or part of the segment ('/file.{ext}').  A path
-parameter may only contain letters, numbers and underscores, e.g. '/{file-name}' is invalid
-and '/{file_name}' is valid.
+request path at that path segment. For example, `'/book/{id}/cover'` will match `'/book/123/cover'` and
+`request.params.id` will be set to `'123'`. Each path segment (everything between the opening `'/'`
+and the closing `'/'` unless it is the end of the path) can only include one named parameter. A
+parameter can cover the entire segment (`'/{param}'`) or part of the segment (`'/file.{ext}'`).  A path
+parameter may only contain letters, numbers and underscores, e.g. `'/{file-name}'` is invalid
+and `'/{file_name}'` is valid.
 
-An optional '?' suffix following the parameter name indicates an optional parameter (only allowed
+An optional `'?'` suffix following the parameter name indicates an optional parameter (only allowed
 if the parameter is at the ends of the path or only covers part of the segment as in
-'/a{param?}/b'). For example, the route '/book/{id?}' matches '/book/' with the value of
+`'/a{param?}/b'`). For example, the route `'/book/{id?}'` matches `'/book/'` with the value of
 `request.params.id` set to an empty string `''`.
 
 ```js
@@ -2499,8 +2500,7 @@ routing table node.
 #### Catch all route
 
 If the application needs to override the default Not Found (404) error response, it can add a
-catch-all route for a specific method or all methods. Only one catch-all route can be defined per
-server connection.
+catch-all route for a specific method or all methods. Only one catch-all route can be defined.
 
 ```js
 const Hapi = require('hapi');
@@ -2567,7 +2567,7 @@ async function example() {
 
 ### <a name="server.state()" /> `server.state(name, [options])`
 
-[HTTP state management](http://tools.ietf.org/html/rfc6265) uses client cookies to persist a state
+[HTTP state management](https://tools.ietf.org/html/rfc6265) uses client cookies to persist a state
 across multiple requests. Registers a cookie definitions where:
 
 - `name` - the cookie name string.
@@ -2904,7 +2904,7 @@ encoder settings. Note that decoder settings are set in [`compression`](#route.o
 
 Default value: `false` (no CORS headers).
 
-The [Cross-Origin Resource Sharing](http://www.w3.org/TR/cors/) protocol allows browsers to make
+The [Cross-Origin Resource Sharing](https://www.w3.org/TR/cors/) protocol allows browsers to make
 cross-origin API calls. CORS is required by web applications running inside a browser which are
 loaded from a different domain than the API server. To enable, set `cors` to `true`, or to an
 object with the following options:
@@ -3285,7 +3285,7 @@ If `true`, applies the validation rule changes to the response payload.
 
 Default value: none.
 
-[**joi**](http://github.com/hapijs/joi) options object pass to the validation function. Useful to
+[**joi**](https://github.com/hapijs/joi) options object pass to the validation function. Useful to
 set global options such as `stripUnknown` or `abortEarly` (the complete list is available
 [here](https://github.com/hapijs/joi/blob/master/API.md#validatevalue-schema-options-callback)).
 If a custom validation function is defined via [`schema`](#route.options.response.schema) or
@@ -3314,7 +3314,7 @@ The default response payload validation rules (for all non-error responses) expr
 
 - `false` - no payload allowed.
 
-- a [**joi**](http://github.com/hapijs/joi) validation object. The [`options`](#route.options.response.options)
+- a [**joi**](https://github.com/hapijs/joi) validation object. The [`options`](#route.options.response.options)
   along with the request context (`{ headers, params, query, payload, app, auth }`) are passed to
   the validation function.
 
@@ -3383,7 +3383,7 @@ following options:
 - `xss` - boolean that controls the 'X-XSS-PROTECTION' header for Internet Explorer. Defaults to
   `true` which sets the header to equal `'1; mode=block'`.
     - Note: this setting can create a security vulnerability in versions of Internet Exploere below
-      8, as well as unpatched versions of IE8. See [here](http://hackademix.net/2009/11/21/ies-xss-filter-creates-xss-vulnerabilities/)
+      8, as well as unpatched versions of IE8. See [here](https://hackademix.net/2009/11/21/ies-xss-filter-creates-xss-vulnerabilities/)
       and [here](https://technet.microsoft.com/library/security/ms10-002) for more information. If
       you actively support old versions of IE, it may be wise to explicitly set this flag to
       `false`.
@@ -3477,7 +3477,7 @@ Validation rules for incoming request headers:
 
 - `true` - any headers allowed (no validation performed).
 
-- a [**joi**](http://github.com/hapijs/joi) validation object.
+- a [**joi**](https://github.com/hapijs/joi) validation object.
 
 - a validation function using the signature `async function(value, options)` where:
 
@@ -3494,7 +3494,7 @@ Note that all header field names must be in lowercase to match the headers norma
 
 Default value: none.
 
-An options object passed to the [**joi**](http://github.com/hapijs/joi) rules or the custom
+An options object passed to the [**joi**](https://github.com/hapijs/joi) rules or the custom
 validation methods. Used for setting global options such as `stripUnknown` or `abortEarly` (the
 complete list is available [here](https://github.com/hapijs/joi/blob/master/API.md#validatevalue-schema-options-callback)).
 
@@ -3523,7 +3523,7 @@ extracting any parameters, and storing them in [`request.params`](#request.param
 
 - `true` - any path parameter value allowed (no validation performed).
 
-- a [**joi**](http://github.com/hapijs/joi) validation object.
+- a [**joi**](https://github.com/hapijs/joi) validation object.
 
 - a validation function using the signature `async function(value, options)` where:
 
@@ -3547,7 +3547,7 @@ Validation rules for incoming request payload (request body), where:
 - `true` - any payload allowed (no validation performed).
 - `false` - no payload allowed.
 
-- a [**joi**](http://github.com/hapijs/joi) validation object.
+- a [**joi**](https://github.com/hapijs/joi) validation object.
     - Note that empty payloads are represented by a `null` value. If a validation schema is
       provided and empty payload are allowed, the schema must be explicitly defined by setting the
       rule to a **joi** schema with `null` allowed (e.g.
@@ -3555,10 +3555,9 @@ Validation rules for incoming request payload (request body), where:
 
 - a validation function using the signature `async function(value, options)` where:
 
-    - `value` - the [`request.query`](#request.query) object containing the request query
-      parameters.
+    - `value` - the [`request.payload`](#request.payload) object containing the request payload.
     - `options` - [`options`](#route.options.validate.options).
-    - if a value is returned, the value is used as the new [`request.payload`](#request.query)
+    - if a value is returned, the value is used as the new [`request.payload`](#request.payload)
       value and the original value is stored in [`request.orig.payload`](#request.orig). Otherwise,
       the payload is left unchanged. If an error is thrown, the error is handled according to
       [`failAction`](#route.options.validate.failAction).
@@ -3578,7 +3577,7 @@ Validation rules for incoming request URI query component (the key-value part of
 - `true` - any query parameter value allowed (no validation performed).
 - `false` - no query parameter value allowed.
 
-- a [**joi**](http://github.com/hapijs/joi) validation object.
+- a [**joi**](https://github.com/hapijs/joi) validation object.
 
 - a validation function using the signature `async function(value, options)` where:
 
@@ -3774,7 +3773,7 @@ The flow between each lifecyle step depends on the value returned by each lifecy
 follows:
 
 - an error:
-    - the lifecycle skips to the **_Response validation**_ step.
+    - the lifecycle skips to the _**Response validation**_ step.
     - if returned by the _**onRequest**_ step it skips to the _**onPreResponse**_ step.
     - if returned by the _**Response validation**_ step it skips to the _**onPreResponse**_ step.
     - if returned by the _**onPreResponse**_ step it skips to the _**Response transmission**_ step.
@@ -4334,13 +4333,13 @@ Return value: the current response object.
 #### <a name="response.encoding()" /> `response.encoding(encoding)`
 
 Sets the string encoding scheme used to serial data into the HTTP payload where:
-- `encoding` - the encoding property value (see [node Buffer encoding](http://nodejs.org/api/buffer.html#buffer_buffer)).
+- `encoding` - the encoding property value (see [node Buffer encoding](https://nodejs.org/api/buffer.html#buffer_buffers_and_character_encodings)).
 
 Return value: the current response object.
 
 #### <a name="response.etag()" /> `response.etag(tag, options)`
 
-Sets the representation [entity tag](http://tools.ietf.org/html/rfc7232#section-2.3) where:
+Sets the representation [entity tag](https://tools.ietf.org/html/rfc7232#section-2.3) where:
 
 - `tag` - the entity tag string without the double-quote.
 
@@ -4619,12 +4618,11 @@ Request information:
 
 - `acceptEncoding` - the request preferred encoding.
 
-- `cors` - if CORS is enabled for the route, contains the following:
+- `cors` - request CORS information (available only after the `'onRequest'` extension point as CORS
+  is configured per-route and no routing decisions are made at that point in the request
+  lifecycle), where:
     - `isOriginMatch` - `true` if the request 'Origin' header matches the configured CORS
       restrictions. Set to `false` if no 'Origin' header is found or if it does not match.
-      Note that this is only available after the `'onRequest'` extension point as CORS is
-      configured per-route and no routing decisions are made at that point in the request
-      lifecycle.
 
 - `host` - content of the HTTP 'Host' header (e.g. 'example.com:8080').
 
@@ -4787,16 +4785,46 @@ Returns a [`response`](#response-object) which you can pass into the [reply inte
         - `response` - the response object being prepared.
         - must return the prepared response object (new object or `response`).
         - may throw an error which is used as the prepared response.
-    - `marshal` - a function with the signature `async function(response)` used to repare the
+    - `marshal` - a function with the signature `async function(response)` used to prepare the
       response for transmission to the client before it is sent, where:
         - `response` - the response object being marshaled.
         - must return the prepared value (not as response object) which can be any value accepted
           by the [`h.response()`](#h.response()) `value` argument.
-        - may throw an error which is used as the marhsaled value.
+        - may throw an error which is used as the marshaled value.
     - `close` - a function with the signature `function(response)` used to close the resources
       opened by the response object (e.g. file handlers), where:
         - `response` - the response object being marshaled.
         - should not throw errors (which are logged but otherwise ignored).
+
+### <a name="request.active()" /> `request.active()`
+
+Returns `true` when the request is active and processing should continue and `false` when the
+request terminated early or completed its lifecycle. Useful when request processing is a
+resource-intensive operation and should be terminated early if the request is no longer active
+(e.g. client disconnected or aborted early).
+
+```js
+const Hapi = require('hapi');
+const server = Hapi.server({ port: 80 });
+
+server.route({
+    method: 'POST',
+    path: '/worker',
+    handler: function (request, h) {
+
+        // Do some work...
+
+        // Check if request is still active
+        if (!request.active()) {
+            return h.close;
+        }
+
+        // Do some more work...
+
+        return null;
+    }
+});
+```
 
 ### <a name="request.log()" /> `request.log(tags, [data])`
 
